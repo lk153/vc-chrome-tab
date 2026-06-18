@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Material 3 (Emerald · Expressive) colour tokens, expressed as raw RGB
+ * channels so Tailwind's `<alpha-value>` (and 8%/12% state layers) work.
+ * Roles follow the M3 colour-role names; Tailwind maps them in tailwind.config.js.
+ */
+:root {
+  --m-primary: 20 108 67;
+  --m-on-primary: 255 255 255;
+  --m-primary-container: 166 242 196;
+  --m-on-primary-container: 0 33 15;
+
+  --m-secondary: 78 99 85;
+  --m-on-secondary: 255 255 255;
+  --m-secondary-container: 208 232 214;
+  --m-on-secondary-container: 11 31 20;
+
+  --m-tertiary: 60 100 112;
+  --m-on-tertiary: 255 255 255;
+  --m-tertiary-container: 191 234 248;
+  --m-on-tertiary-container: 0 31 40;
+
+  --m-error: 186 26 26;
+  --m-on-error: 255 255 255;
+  --m-error-container: 255 218 214;
+  --m-on-error-container: 65 0 2;
+
+  --m-surface: 246 251 244;
+  --m-surface-dim: 214 219 212;
+  --m-surface-bright: 246 251 244;
+  --m-surface-container-lowest: 255 255 255;
+  --m-surface-container-low: 240 245 238;
+  --m-surface-container: 234 240 232;
+  --m-surface-container-high: 229 235 227;
+  --m-surface-container-highest: 223 228 221;
+  --m-on-surface: 24 29 25;
+  --m-on-surface-variant: 65 73 65;
+  --m-outline: 113 121 113;
+  --m-outline-variant: 193 201 191;
+
+  --m-inverse-surface: 45 50 45;
+  --m-inverse-on-surface: 238 242 234;
+  --m-inverse-primary: 139 216 168;
+  --m-scrim: 0 0 0;
+}
+
+html.dark {
+  --m-primary: 139 216 168;
+  --m-on-primary: 0 57 32;
+  --m-primary-container: 0 82 48;
+  --m-on-primary-container: 166 242 196;
+
+  --m-secondary: 180 204 188;
+  --m-on-secondary: 33 53 42;
+  --m-secondary-container: 55 75 63;
+  --m-on-secondary-container: 208 232 214;
+
+  --m-tertiary: 164 205 220;
+  --m-on-tertiary: 5 54 64;
+  --m-tertiary-container: 35 76 87;
+  --m-on-tertiary-container: 191 234 248;
+
+  --m-error: 255 180 171;
+  --m-on-error: 105 0 5;
+  --m-error-container: 147 0 10;
+  --m-on-error-container: 255 218 214;
+
+  --m-surface: 15 21 17;
+  --m-surface-dim: 15 21 17;
+  --m-surface-bright: 53 59 53;
+  --m-surface-container-lowest: 10 15 11;
+  --m-surface-container-low: 24 29 24;
+  --m-surface-container: 28 33 28;
+  --m-surface-container-high: 38 43 38;
+  --m-surface-container-highest: 49 54 48;
+  --m-on-surface: 223 228 221;
+  --m-on-surface-variant: 193 201 191;
+  --m-outline: 139 147 139;
+  --m-outline-variant: 65 73 65;
+
+  --m-inverse-surface: 223 228 221;
+  --m-inverse-on-surface: 45 50 45;
+  --m-inverse-primary: 20 108 67;
+  --m-scrim: 0 0 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: rgb(var(--m-surface));
+  color: rgb(var(--m-on-surface));
+  font-family: theme("fontFamily.sans");
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  /* --- M3 type scale ---------------------------------------------------- */
+  .headline-small {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 400;
+  }
+  .title-large {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 400;
+  }
+  .title-medium {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    letter-spacing: 0.15px;
+  }
+  .title-small {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+  }
+  .body-large {
+    font-size: 16px;
+    line-height: 24px;
+  }
+  .body-medium {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+  }
+  .body-small {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.4px;
+  }
+  .label-large {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+  }
+  .label-medium {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+  .label-small {
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* --- M3 components (use these everywhere) ------------------------------ */
+  /* Shared focus indicators (keyboard only). */
+  .m3-focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface;
+  }
+  .m3-focus-ring-flat {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary;
+  }
+
+  .m3-btn-filled {
+    @apply m3-focus-ring inline-flex h-10 items-center justify-center gap-2 rounded-full bg-primary px-6 text-on-primary label-large transition-shadow hover:shadow-m3-1 disabled:opacity-60;
+  }
+  .m3-btn-tonal {
+    @apply m3-focus-ring inline-flex h-10 items-center justify-center gap-2 rounded-full bg-secondary-container px-5 text-on-secondary-container label-large disabled:opacity-60;
+  }
+  .m3-btn-outlined {
+    @apply m3-focus-ring inline-flex h-10 items-center justify-center gap-2 rounded-full border border-outline-variant px-5 text-primary label-large hover:bg-primary/[0.08] disabled:opacity-60;
+  }
+  .m3-btn-text {
+    @apply m3-focus-ring inline-flex h-10 items-center justify-center gap-2 rounded-full px-3 text-primary label-large hover:bg-primary/[0.08] disabled:opacity-60;
+  }
+  .m3-fab {
+    @apply m3-focus-ring inline-flex h-14 items-center justify-center gap-2.5 rounded-m3-lg bg-primary-container px-5 text-on-primary-container shadow-m3-2 label-large transition-shadow hover:shadow-m3-3;
+  }
+  .m3-icon-btn {
+    @apply m3-focus-ring-flat grid h-10 w-10 place-items-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/[0.08];
+  }
+  .m3-chip {
+    @apply m3-focus-ring-flat inline-flex h-9 items-center gap-2 rounded-full border border-outline-variant px-3.5 text-on-surface-variant label-large transition-colors hover:bg-on-surface/[0.08];
+  }
+  .m3-field {
+    @apply w-full rounded-m3-xs border border-outline bg-transparent px-4 py-2.5 text-on-surface body-large outline-none transition-colors placeholder:text-on-surface-variant focus:border-primary focus:ring-1 focus:ring-primary;
+  }
+  .m3-menu {
+    @apply rounded-m3-sm bg-surface-container-high p-2 text-on-surface shadow-m3-2;
+  }
+  .m3-nav-item {
+    @apply m3-focus-ring-flat flex h-12 w-full items-center gap-3 rounded-full px-4 text-left text-on-surface-variant label-large transition-colors hover:bg-on-surface/[0.08];
+  }
+  .m3-nav-item-active {
+    @apply bg-secondary-container text-on-secondary-container hover:bg-secondary-container;
+  }
+}
+
+/* Thin M3 scrollbars. */
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--m-outline-variant));
+  border-radius: 9999px;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
