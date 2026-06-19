@@ -3,7 +3,6 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
-  closestCorners,
   useSensor,
   useSensors,
   type DragStartEvent,
@@ -12,20 +11,30 @@ import type { OpenTab } from "@vctabs/shared";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useUiStore } from "@/store/useUiStore";
 import { useOpenTabsStore } from "@/store/useOpenTabsStore";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useOverlayStore } from "@/store/useOverlayStore";
+import { Button } from "@/components/ui/Button";
+import { Toast } from "@/components/Toast";
+import { IconPlus } from "@/components/icons";
 import { Sidebar } from "./components/Sidebar";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { CollectionList } from "./components/CollectionList";
 import { OpenTabsPanel } from "./components/OpenTabsPanel";
 import { EditTabModal } from "./components/EditTabModal";
-import { resolveDrop } from "./dnd";
+import { CommandPalette } from "./components/CommandPalette";
+import { SavePicker } from "./components/SavePicker";
+import { VerifyBanner } from "./components/VerifyBanner";
+import { collisionDetection, resolveDrop } from "./dnd";
 
 export function App() {
   useBootstrap();
+  useCommandHotkey();
   const spaceId = useActiveSpaceId();
 
   const spaces = useWorkspaceStore((s) => s.data.spaces);
   const collections = useWorkspaceStore((s) => s.data.collections);
   const tabs = useWorkspaceStore((s) => s.data.tabs);
+  const addCollection = useWorkspaceStore((s) => s.addCollection);
   const editingTabId = useUiStore((s) => s.editingTabId);
   // Call both hooks unconditionally — `&&` would short-circuit the second one
   // and change the hook count between renders (React error #310).
@@ -39,15 +48,24 @@ export function App() {
   if (!ready || !spaceId) return <LoadingScreen />;
 
   const space = spaces.find((s) => s.id === spaceId);
-  const count = collections.filter((c) => c.spaceId === spaceId).length;
+  const spaceCollectionIds = new Set(
+    collections.filter((c) => c.spaceId === spaceId).map((c) => c.id),
+  );
+  const collectionCount = spaceCollectionIds.size;
+  const savedTabCount = tabs.filter((t) => spaceCollectionIds.has(t.collectionId)).length;
   const editingTab = editingTabId ? tabs.find((t) => t.id === editingTabId) : undefined;
+
+  const onNewCollection = () => {
+    const name = window.prompt("Name your new collection");
+    if (name?.trim()) addCollection(spaceId, name.trim());
+  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface">
       <Sidebar />
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCorners}
+        collisionDetection={collisionDetection}
         onDragStart={(e) => setDragLabel(dragLabelFor(e))}
         onDragEnd={(e) => {
           setDragLabel(null);
@@ -55,10 +73,21 @@ export function App() {
         }}
       >
         <main className="flex min-w-0 flex-1 flex-col">
+          <VerifyBanner />
           <div className="px-6 py-4">
-            <div className="mb-3 flex items-baseline gap-3">
-              <h1 className="headline-small text-on-surface">{space?.name ?? "Workspace"}</h1>
-              <span className="body-medium text-on-surface-variant">{count} collections</span>
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <h1 className="text-[28px] font-bold leading-tight text-on-surface">
+                  {space?.name ?? "Workspace"}
+                </h1>
+                <p className="body-medium text-on-surface-variant">
+                  {collectionCount} collections · {savedTabCount} saved tabs
+                </p>
+              </div>
+              <Button variant="filled" onClick={onNewCollection} className="shrink-0">
+                <IconPlus size={18} />
+                New Collection
+              </Button>
             </div>
             <WorkspaceToolbar spaceId={spaceId} />
           </div>
@@ -73,20 +102,42 @@ export function App() {
       </DndContext>
 
       {editingTab && <EditTabModal key={editingTab.id} tab={editingTab} />}
+      <CommandPalette />
+      <SavePicker />
+      <Toast />
     </div>
   );
 }
 
-/** Loads persisted state once on mount. */
+/** Loads persisted state once on mount. Auth/sync start AFTER the workspace
+ *  data is in place, so the sync engine pushes/merges against real local data. */
 function useBootstrap() {
   const initWorkspace = useWorkspaceStore((s) => s.init);
   const initUi = useUiStore((s) => s.init);
+  const initAuth = useAuthStore((s) => s.init);
   const refreshTabs = useOpenTabsStore((s) => s.refresh);
   useEffect(() => {
-    void initWorkspace();
-    void initUi();
-    void refreshTabs();
-  }, [initWorkspace, initUi, refreshTabs]);
+    void (async () => {
+      await Promise.all([initWorkspace(), initUi()]);
+      void refreshTabs();
+      void initAuth();
+    })();
+  }, [initWorkspace, initUi, initAuth, refreshTabs]);
+}
+
+/** Global ⌘K / Ctrl+K toggles the command palette. */
+function useCommandHotkey() {
+  const toggleCmd = useOverlayStore((s) => s.toggleCmd);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        toggleCmd();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [toggleCmd]);
 }
 
 /** Resolves the active space, defaulting to the first available one. */

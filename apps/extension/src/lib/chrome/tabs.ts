@@ -32,6 +32,12 @@ export async function restoreTabs(urls: string[]): Promise<void> {
   await chrome.windows.create({ url: urls });
 }
 
+/** Closes an open browser tab. */
+export async function closeTab(tabId: number): Promise<void> {
+  if (!hasTabsApi()) return;
+  await chrome.tabs.remove(tabId);
+}
+
 /** Focuses an already-open browser tab and its window. */
 export async function activateTab(tabId: number, windowId: number): Promise<void> {
   if (!hasTabsApi()) return;

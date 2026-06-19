@@ -2,16 +2,15 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { SavedTab, ViewMode } from "@vctabs/shared";
 import { Favicon } from "@/components/Favicon";
-import { IconGrip, IconPencil, IconStar, IconTrash } from "@/components/icons";
-import { IconButton } from "@/components/ui/IconButton";
+import { IconPencil, IconX } from "@/components/icons";
 import { hostLabel } from "@/lib/data/favicon";
 import { openUrl } from "@/lib/chrome/tabs";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useUiStore } from "@/store/useUiStore";
 
-/** A single saved tab. Click opens the URL; the ✎ icon edits it; the grip drags. */
+/** A saved tab card. The whole card is click-to-open and drag-to-reorder; the
+ *  always-visible ✕ removes it from the collection, the hover ✎ edits it. */
 export function TabCard({ tab, view }: { tab: SavedTab; view: ViewMode }) {
-  const toggleStar = useWorkspaceStore((s) => s.toggleStar);
   const deleteTab = useWorkspaceStore((s) => s.deleteTab);
   const openTabEditor = useUiStore((s) => s.openTabEditor);
 
@@ -25,87 +24,52 @@ export function TabCard({ tab, view }: { tab: SavedTab; view: ViewMode }) {
     transition,
     opacity: isDragging ? 0.4 : 1,
   };
-
-  const isRow = view === "list" || view === "compact";
+  const isRow = view === "list";
+  const stop = (e: { stopPropagation: () => void }) => e.stopPropagation();
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative flex items-center gap-2.5 rounded-m3-lg bg-surface-container-high transition-shadow hover:shadow-m3-1 ${
-        isRow ? "px-2.5 py-2" : "flex-col items-start p-3"
+      {...attributes}
+      {...listeners}
+      onClick={() => openUrl(tab.url)}
+      title={tab.url}
+      className={`group relative flex cursor-pointer items-center gap-3 rounded-[13px] border border-outline-variant bg-surface-container-lowest shadow-soft transition hover:-translate-y-px hover:border-primary/40 hover:shadow-soft-hover ${
+        isRow ? "px-3 py-2" : "px-3.5 py-3"
       }`}
     >
-      <div className="flex w-full items-center gap-2.5">
-        <IconButton
-          {...attributes}
-          {...listeners}
-          label="Drag to reorder"
-          className="h-7 w-7 cursor-grab text-on-surface-variant opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 active:cursor-grabbing"
-        >
-          <IconGrip size={15} />
-        </IconButton>
-        <Favicon src={tab.faviconUrl} title={tab.title} />
-        <button
-          type="button"
-          onClick={() => openUrl(tab.url)}
-          className="min-w-0 flex-1 text-left"
-          title={tab.url}
-        >
-          <span className="title-small block truncate text-on-surface">{tab.title}</span>
-          {!view.includes("compact") && (
-            <span className="body-small block truncate text-on-surface-variant">
-              {hostLabel(tab.url)}
-            </span>
-          )}
-        </button>
-        <TabActions
-          starred={tab.starred}
-          onEdit={() => openTabEditor(tab.id)}
-          onStar={() => toggleStar(tab.id)}
-          onDelete={() => deleteTab(tab.id)}
-        />
+      <Favicon src={tab.faviconUrl} title={tab.title} size={isRow ? 26 : 32} />
+      <div className="min-w-0 flex-1">
+        <div className="truncate body-medium font-semibold text-on-surface">{tab.title}</div>
+        <div className="truncate font-mono body-small text-on-surface-variant">{hostLabel(tab.url)}</div>
       </div>
-    </div>
-  );
-}
-
-function TabActions({
-  starred,
-  onEdit,
-  onStar,
-  onDelete,
-}: {
-  starred: boolean;
-  onEdit: () => void;
-  onStar: () => void;
-  onDelete: () => void;
-}) {
-  return (
-    <div className="flex shrink-0 items-center gap-0.5">
-      <IconButton
-        label="Edit tab"
-        onClick={onEdit}
-        className="h-8 w-8 text-on-surface-variant opacity-0 hover:text-primary group-hover:opacity-100"
+      <button
+        type="button"
+        onPointerDown={stop}
+        onClick={(e) => {
+          stop(e);
+          openTabEditor(tab.id);
+        }}
+        title="Edit tab"
+        aria-label="Edit tab"
+        className="m3-icon-btn h-7 w-7 shrink-0 opacity-0 hover:text-primary group-hover:opacity-100 group-focus-within:opacity-100"
       >
         <IconPencil size={15} />
-      </IconButton>
-      <IconButton
-        label={starred ? "Unstar" : "Star"}
-        onClick={onStar}
-        className={`h-8 w-8 ${
-          starred ? "text-primary" : "text-on-surface-variant opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-        }`}
+      </button>
+      <button
+        type="button"
+        onPointerDown={stop}
+        onClick={(e) => {
+          stop(e);
+          deleteTab(tab.id);
+        }}
+        title="Remove from collection"
+        aria-label="Remove from collection"
+        className="m3-icon-btn h-7 w-7 shrink-0 hover:text-error"
       >
-        <IconStar size={15} filled={starred} />
-      </IconButton>
-      <IconButton
-        label="Remove"
-        onClick={onDelete}
-        className="h-8 w-8 text-on-surface-variant opacity-0 hover:text-error group-hover:opacity-100"
-      >
-        <IconTrash size={15} />
-      </IconButton>
+        <IconX size={15} />
+      </button>
     </div>
   );
 }

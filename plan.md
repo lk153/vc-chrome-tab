@@ -25,6 +25,8 @@ I need to build a tab management as Chrome extension same exactly like 'Toby: Ta
 # Technical Requirement
 - You are a Principal Full-Stack Software Engineer
 - Due to the intention to deploy on **Vercel** (https://vercel.com). So propose a tech stack that is easy to set up on Vercel and deploy on it
-- DB storage [**IF NEED**]: MongoDB with connection string (**mongodb+srv://admin:admin123@vc-cluster-0.maik9uh.mongodb.net/?appName=vc-cluster-0**)
+- DB storage [**IF NEED**]: MongoDB (Atlas). The connection string is **not stored here** — it lives only in a
+  gitignored `apps/web/.env.local` as the `MONGODB_URI` env var, never committed. (The original demo string used weak
+  credentials and was treated as compromised; rotate the DB password in Atlas. See `apps/web/.env.example`.)
 - Code should be organized as prioritizing on readable, maintainable
 - Split into small function if need, DO NOT write long function/method

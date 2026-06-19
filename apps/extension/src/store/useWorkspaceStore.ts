@@ -9,6 +9,9 @@ interface WorkspaceState {
   data: WorkspaceData;
   loaded: boolean;
   init: () => Promise<void>;
+  /** Replace local state with the merged result of a sync pull (no-op for the
+   *  sync subscription, which ignores remote-applied changes). */
+  setDataFromRemote: (data: WorkspaceData) => void;
   addSpace: (name: string) => void;
   deleteSpace: (id: string) => void;
   addCollection: (spaceId: string, name: string) => void;
@@ -47,6 +50,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => {
       set({ data, loaded: true });
     },
 
+    setDataFromRemote: (data) => commit(data),
     addSpace: (name) => commit(mutations.addSpace(get().data, name)),
     deleteSpace: (id) => commit(mutations.deleteSpace(get().data, id)),
     addCollection: (spaceId, name) => commit(mutations.addCollection(get().data, spaceId, name)),

@@ -13,6 +13,9 @@ export type SortMode = "manual" | "alphabetical" | "starred" | "created";
 
 export type ThemeMode = "light" | "dark";
 
+/** How the live "Open Tabs" panel lists tabs. */
+export type OpenTabsGroupMode = "site" | "flat";
+
 /** A unit saved inside a collection: a single URL with display metadata. */
 export interface SavedTab {
   id: string;
@@ -65,6 +68,7 @@ export interface UiPreferences {
   viewMode: ViewMode;
   sortMode: SortMode;
   activeSpaceId: string | null;
+  openTabsGroupMode: OpenTabsGroupMode;
 }
 
 /** A live browser tab surfaced in the "Open Tabs" panel. */

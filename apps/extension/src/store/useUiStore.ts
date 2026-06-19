@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { SortMode, ThemeMode, ViewMode } from "@vctabs/shared";
+import type { OpenTabsGroupMode, SortMode, ThemeMode, ViewMode } from "@vctabs/shared";
 import { loadPrefs, savePrefs } from "@/lib/data/repository";
 import { applyTheme } from "@/lib/theme";
 
@@ -8,6 +8,7 @@ interface UiState {
   viewMode: ViewMode;
   sortMode: SortMode;
   activeSpaceId: string | null;
+  openTabsGroupMode: OpenTabsGroupMode;
   searchQuery: string;
   /** Id of the tab currently open in the edit modal, or null. */
   editingTabId: string | null;
@@ -18,6 +19,7 @@ interface UiState {
   setViewMode: (viewMode: ViewMode) => void;
   setSortMode: (sortMode: SortMode) => void;
   setActiveSpace: (id: string) => void;
+  setOpenTabsGroupMode: (mode: OpenTabsGroupMode) => void;
   setSearchQuery: (query: string) => void;
   openTabEditor: (id: string) => void;
   closeTabEditor: () => void;
@@ -30,8 +32,8 @@ export const useUiStore = create<UiState>((set, get) => {
     // early setActiveSpace() that would otherwise clobber the saved theme/view
     // with the store's defaults (race between initUi and initWorkspace).
     if (!get().loaded) return;
-    const { theme, viewMode, sortMode, activeSpaceId } = get();
-    void savePrefs({ theme, viewMode, sortMode, activeSpaceId });
+    const { theme, viewMode, sortMode, activeSpaceId, openTabsGroupMode } = get();
+    void savePrefs({ theme, viewMode, sortMode, activeSpaceId, openTabsGroupMode });
   };
 
   let started = false;
@@ -41,6 +43,7 @@ export const useUiStore = create<UiState>((set, get) => {
     viewMode: "card",
     sortMode: "manual",
     activeSpaceId: null,
+    openTabsGroupMode: "site",
     searchQuery: "",
     editingTabId: null,
     loaded: false,
@@ -69,6 +72,10 @@ export const useUiStore = create<UiState>((set, get) => {
     },
     setActiveSpace: (activeSpaceId) => {
       set({ activeSpaceId });
+      persist();
+    },
+    setOpenTabsGroupMode: (openTabsGroupMode) => {
+      set({ openTabsGroupMode });
       persist();
     },
     setSearchQuery: (searchQuery) => set({ searchQuery }),

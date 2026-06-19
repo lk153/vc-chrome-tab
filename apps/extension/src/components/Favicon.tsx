@@ -1,15 +1,38 @@
 import { useState } from "react";
+import { monogramColor } from "@/lib/data/color";
 
-/** Favicon image with a graceful letter fallback when it fails to load. */
-export function Favicon({ src, title, size = 16 }: { src?: string; title: string; size?: number }) {
+/**
+ * Site favicon for tab items. Falls back to a colored letter tile (monogram)
+ * when the image is missing or fails to load (e.g. localhost / intranet).
+ */
+export function Favicon({
+  src,
+  title,
+  size = 16,
+  radius,
+}: {
+  src?: string;
+  title: string;
+  size?: number;
+  radius?: number;
+}) {
   const [failed, setFailed] = useState(false);
-  const letter = title.trim().charAt(0).toUpperCase() || "•";
+  const r = radius ?? Math.round(size * 0.28);
 
   if (!src || failed) {
+    const color = monogramColor(title);
+    const letter = title.trim().charAt(0).toUpperCase() || "•";
     return (
       <span
-        className="grid shrink-0 place-items-center rounded-m3-xs bg-primary-container label-small text-on-primary-container"
-        style={{ width: size, height: size }}
+        className="grid shrink-0 place-items-center font-semibold leading-none"
+        style={{
+          width: size,
+          height: size,
+          borderRadius: r,
+          color,
+          backgroundColor: `${color}22`,
+          fontSize: Math.round(size * 0.42),
+        }}
       >
         {letter}
       </span>
@@ -23,7 +46,8 @@ export function Favicon({ src, title, size = 16 }: { src?: string; title: string
       width={size}
       height={size}
       onError={() => setFailed(true)}
-      className="shrink-0 rounded-m3-xs"
+      className="shrink-0 object-contain"
+      style={{ borderRadius: r }}
     />
   );
 }

@@ -1,8 +1,28 @@
-import type { DragEndEvent } from "@dnd-kit/core";
+import {
+  pointerWithin,
+  rectIntersection,
+  type CollisionDetection,
+  type DragEndEvent,
+} from "@dnd-kit/core";
 import type { OpenTab } from "@vctabs/shared";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 
 const COLLECTION_PREFIX = "collection:";
+
+/**
+ * Collision strategy. Prefer the droppable the pointer is literally inside, so
+ * a drop lands in whatever collection the cursor is over — including a large,
+ * empty "No tabs yet" container that corner-distance detection (closestCorners)
+ * consistently misses. Within a collection we prefer a specific tab over the
+ * container so reordering still computes an insertion point; falling back to
+ * rect intersection keeps drops working at the very edges.
+ */
+export const collisionDetection: CollisionDetection = (args) => {
+  const within = pointerWithin(args);
+  const collisions = within.length > 0 ? within : rectIntersection(args);
+  const overTab = collisions.find((c) => !String(c.id).startsWith(COLLECTION_PREFIX));
+  return overTab ? [overTab] : collisions;
+};
 
 /**
  * Turns a drag-end event into a workspace mutation:

@@ -24,6 +24,7 @@ export async function loadPrefs(): Promise<UiPreferences> {
     viewMode: "card",
     sortMode: "manual",
     activeSpaceId: null,
+    openTabsGroupMode: "site",
   });
 }
 

@@ -347,6 +347,7 @@ mirroring the extension, à la `app.gettoby.com`) is an additive Phase-5 decisio
 - **`to/<slug>` links** — `declarativeNetRequest` redirect is robust; `chrome.omnibox` keyword ships first.
 - **New-tab UX** — render instantly from cache (no blank flash while syncing) — local-first covers this.
 - **MV3 service worker** is ephemeral — durable state only in `chrome.storage`, never worker memory.
-- **Atlas creds** — the committed `admin:admin123` is weak; rotate to a least-privilege user and keep the URI in
-  Vercel env (resolved per decision #4, promoted to a Phase-0 checklist item).
+- **Atlas creds** — the original demo credentials were weak and committed (now redacted; treat as compromised).
+  Rotate the DB password to a least-privilege user, keep the URI only in env vars (`apps/web/.env.local` for dev,
+  Vercel env for prod), never committed.
 ```

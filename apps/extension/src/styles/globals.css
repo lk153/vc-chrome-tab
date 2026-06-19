@@ -8,82 +8,84 @@
  * Roles follow the M3 colour-role names; Tailwind maps them in tailwind.config.js.
  */
 :root {
-  --m-primary: 20 108 67;
+  /* Light — Claude Design handoff palette (app #eef1ec, brand #147a4a). */
+  --m-primary: 20 122 74;
   --m-on-primary: 255 255 255;
-  --m-primary-container: 166 242 196;
-  --m-on-primary-container: 0 33 15;
+  --m-primary-container: 228 241 234;
+  --m-on-primary-container: 20 122 74;
 
-  --m-secondary: 78 99 85;
+  --m-secondary: 88 98 89;
   --m-on-secondary: 255 255 255;
-  --m-secondary-container: 208 232 214;
-  --m-on-secondary-container: 11 31 20;
+  --m-secondary-container: 242 245 240;
+  --m-on-secondary-container: 25 33 28;
 
   --m-tertiary: 60 100 112;
   --m-on-tertiary: 255 255 255;
   --m-tertiary-container: 191 234 248;
   --m-on-tertiary-container: 0 31 40;
 
-  --m-error: 186 26 26;
+  --m-error: 192 38 38;
   --m-on-error: 255 255 255;
-  --m-error-container: 255 218 214;
+  --m-error-container: 253 226 226;
   --m-on-error-container: 65 0 2;
 
-  --m-surface: 246 251 244;
-  --m-surface-dim: 214 219 212;
-  --m-surface-bright: 246 251 244;
+  --m-surface: 238 241 236;
+  --m-surface-dim: 224 228 222;
+  --m-surface-bright: 255 255 255;
   --m-surface-container-lowest: 255 255 255;
-  --m-surface-container-low: 240 245 238;
-  --m-surface-container: 234 240 232;
-  --m-surface-container-high: 229 235 227;
-  --m-surface-container-highest: 223 228 221;
-  --m-on-surface: 24 29 25;
-  --m-on-surface-variant: 65 73 65;
-  --m-outline: 113 121 113;
-  --m-outline-variant: 193 201 191;
+  --m-surface-container-low: 251 252 250;
+  --m-surface-container: 255 255 255;
+  --m-surface-container-high: 255 255 255;
+  --m-surface-container-highest: 242 245 240;
+  --m-on-surface: 25 33 28;
+  --m-on-surface-variant: 88 98 89;
+  --m-outline: 139 149 140;
+  --m-outline-variant: 226 231 225;
 
-  --m-inverse-surface: 45 50 45;
-  --m-inverse-on-surface: 238 242 234;
-  --m-inverse-primary: 139 216 168;
+  --m-inverse-surface: 25 33 28;
+  --m-inverse-on-surface: 238 241 236;
+  --m-inverse-primary: 55 185 123;
   --m-scrim: 0 0 0;
 }
 
 html.dark {
-  --m-primary: 139 216 168;
-  --m-on-primary: 0 57 32;
-  --m-primary-container: 0 82 48;
-  --m-on-primary-container: 166 242 196;
+  /* Dark — Claude Design handoff palette (app #0b100d, brand #37b97b). */
+  --m-primary: 55 185 123;
+  --m-on-primary: 255 255 255;
+  --m-primary-container: 18 43 31;
+  --m-on-primary-container: 55 185 123;
 
-  --m-secondary: 180 204 188;
-  --m-on-secondary: 33 53 42;
-  --m-secondary-container: 55 75 63;
-  --m-on-secondary-container: 208 232 214;
+  --m-secondary: 159 173 163;
+  --m-on-secondary: 20 26 23;
+  --m-secondary-container: 32 42 35;
+  --m-on-secondary-container: 233 239 234;
 
-  --m-tertiary: 164 205 220;
-  --m-on-tertiary: 5 54 64;
-  --m-tertiary-container: 35 76 87;
+  --m-tertiary: 150 200 215;
+  --m-on-tertiary: 5 40 48;
+  --m-tertiary-container: 26 56 64;
   --m-on-tertiary-container: 191 234 248;
 
-  --m-error: 255 180 171;
-  --m-on-error: 105 0 5;
-  --m-error-container: 147 0 10;
+  --m-error: 255 138 128;
+  --m-on-error: 65 0 2;
+  --m-error-container: 90 18 18;
   --m-on-error-container: 255 218 214;
 
-  --m-surface: 15 21 17;
-  --m-surface-dim: 15 21 17;
-  --m-surface-bright: 53 59 53;
-  --m-surface-container-lowest: 10 15 11;
-  --m-surface-container-low: 24 29 24;
-  --m-surface-container: 28 33 28;
-  --m-surface-container-high: 38 43 38;
-  --m-surface-container-highest: 49 54 48;
-  --m-on-surface: 223 228 221;
-  --m-on-surface-variant: 193 201 191;
-  --m-outline: 139 147 139;
-  --m-outline-variant: 65 73 65;
+  --m-surface: 11 16 13;
+  --m-surface-dim: 9 13 11;
+  --m-surface-bright: 40 48 42;
+  --m-surface-container-lowest: 25 33 27;
+  --m-surface-container-low: 15 20 15;
+  --m-surface-container: 18 24 19;
+  --m-surface-container-high: 18 24 19;
+  --m-surface-container-highest: 32 42 35;
+  --m-on-surface: 233 239 234;
+  --m-on-surface-variant: 159 173 163;
+  --m-outline: 111 125 116;
+  --m-outline-variant: 38 46 40;
 
-  --m-inverse-surface: 223 228 221;
-  --m-inverse-on-surface: 45 50 45;
-  --m-inverse-primary: 20 108 67;
+  --m-inverse-surface: 233 239 234;
+  --m-inverse-on-surface: 11 16 13;
+  --m-inverse-primary: 20 122 74;
   --m-scrim: 0 0 0;
 }
 
@@ -214,3 +216,20 @@ body {
 .scroll-thin::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* Overlay + toast animations (from the design handoff). */
+@keyframes vc-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes vc-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes vc-toast {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.animate-overlay-fade { animation: vc-fade 0.14s ease; }
+.animate-overlay-pop { animation: vc-pop 0.18s cubic-bezier(0.2, 0.9, 0.3, 1); }
+.animate-toast { animation: vc-toast 0.22s cubic-bezier(0.2, 0.9, 0.3, 1); }
