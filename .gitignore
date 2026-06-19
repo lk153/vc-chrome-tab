@@ -9,4 +9,4 @@ dist/
 *.log
 .turbo/
 coverage/
-apps/web/.next/
+.next
