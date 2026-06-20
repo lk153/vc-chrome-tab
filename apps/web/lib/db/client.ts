@@ -1,5 +1,13 @@
+import tls from "node:tls";
 import { MongoClient, type Db } from "mongodb";
 import { env } from "../env";
+
+// This Atlas cluster's TLS endpoint rejects Node's TLS 1.3 handshake (it replies
+// with an internal_error alert), which breaks every DB connection on both local
+// Node 26 and Vercel's Node runtime. Cap outbound TLS at 1.2 in code — the
+// equivalent of `node --tls-max-v1.2`, but applied at runtime so it works on
+// Vercel without relying on NODE_OPTIONS. TLS 1.2 to Atlas is fully secure.
+tls.DEFAULT_MAX_VERSION = "TLSv1.2";
 
 /**
  * Cached client + index init memoized on globalThis so warm serverless
