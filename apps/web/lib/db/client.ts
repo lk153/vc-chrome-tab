@@ -1,13 +1,18 @@
-import tls from "node:tls";
 import { MongoClient, type Db } from "mongodb";
 import { env } from "../env";
 
-// This Atlas cluster's TLS endpoint rejects Node's TLS 1.3 handshake (it replies
-// with an internal_error alert), which breaks every DB connection on both local
-// Node 26 and Vercel's Node runtime. Cap outbound TLS at 1.2 in code — the
-// equivalent of `node --tls-max-v1.2`, but applied at runtime so it works on
-// Vercel without relying on NODE_OPTIONS. TLS 1.2 to Atlas is fully secure.
-tls.DEFAULT_MAX_VERSION = "TLSv1.2";
+// This Atlas cluster rejects Node's TLS 1.3 handshake (internal_error alert),
+// breaking every DB connection. Cap outbound TLS at 1.2 right before we connect
+// — the equivalent of `node --tls-max-v1.2`. We reach the real `tls` singleton
+// via a runtime require (webpack's ESM-import interop doesn't reliably mutate
+// the live module), and do it in the connect path so it runs inside whichever
+// serverless function actually opens the connection (instrumentation.ts only
+// runs at server boot, which isn't guaranteed before each lambda's connect).
+// TLS 1.2 to Atlas is fully supported and secure.
+function capOutboundTls(): void {
+  const nodeRequire = eval("require") as (id: string) => { DEFAULT_MAX_VERSION: string };
+  nodeRequire("tls").DEFAULT_MAX_VERSION = "TLSv1.2";
+}
 
 /**
  * Cached client + index init memoized on globalThis so warm serverless
@@ -30,6 +35,7 @@ const dbName = (() => {
 
 function clientPromise(): Promise<MongoClient> {
   if (!globalForMongo._mongoClientPromise) {
+    capOutboundTls();
     globalForMongo._mongoClientPromise = new MongoClient(env.mongoUri, { maxPoolSize: 5 }).connect();
   }
   return globalForMongo._mongoClientPromise;
