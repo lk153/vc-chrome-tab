@@ -7,6 +7,8 @@ const nextConfig = {
     // argon2 is a native (.node) addon — keep it as a runtime require()
     // instead of letting webpack try (and fail) to bundle the binary.
     serverComponentsExternalPackages: ["@node-rs/argon2"],
+    // Enable instrumentation.ts (server-boot hook that caps Atlas TLS at 1.2).
+    instrumentationHook: true,
   },
 };
 
