@@ -5,10 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/gen-icons.mjs && tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "icons": "node scripts/gen-icons.mjs",
     "package": "pnpm build && rm -f vc-tabs-extension.zip && (cd dist && zip -r -X ../vc-tabs-extension.zip . -x '*.map' -x '*.woff') && echo 'Created apps/extension/vc-tabs-extension.zip (upload this to the Chrome Web Store)'"
   },
   "dependencies": {

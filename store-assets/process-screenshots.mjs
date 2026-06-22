@@ -146,7 +146,7 @@ function downscale2x({ width, height, px }) {
   return { width: ow, height: oh, px: out };
 }
 
-// --- PNG encode (shared with apps/extension/scripts/gen-icons.mjs) --------
+// --- PNG encode (self-contained, zero deps) ------------------------------
 
 const CRC_TABLE = (() => {
   const t = new Uint32Array(256);
