@@ -34,7 +34,7 @@ export default function PrivacyPage() {
     >
       <div style={{ fontSize: 18, fontWeight: 800, color: BRAND, marginBottom: 28 }}>VC Tabs</div>
       <h1 style={{ fontSize: 30, fontWeight: 800, margin: "0 0 8px" }}>Privacy Policy</h1>
-      <p style={{ fontSize: 14, color: "#74796d", margin: "0 0 8px" }}>Effective date: 19 June 2026</p>
+      <p style={{ fontSize: 14, color: "#74796d", margin: "0 0 8px" }}>Effective date: 22 June 2026</p>
       <P>
         VC Tabs (&ldquo;the extension&rdquo;) is a tab manager that lets you save, organize, and restore
         browser tabs into Spaces and Collections. It works fully offline, and offers an{" "}
@@ -46,25 +46,35 @@ export default function PrivacyPage() {
       <ul>
         <LI>
           <strong>Local-first.</strong> Without signing in, everything you create stays on your device
-          in <code>chrome.storage.local</code>. The only outbound request in that mode is to load
-          website favicons.
+          in <code>chrome.storage.local</code>. The only request that leaves your device in that mode is
+          a favicon lookup to Google (see &ldquo;Favicons&rdquo;).
         </LI>
         <LI>
-          <strong>Optional sync.</strong> If you create an account and sign in, your saved tabs and
-          collections are sent to and stored on our server so they follow you across devices. Sign-in is
-          optional and off by default.
+          <strong>Optional sync.</strong> If you create an account and sign in, your Spaces, Collections,
+          and saved tabs are sent to and stored on our server so they sync across your devices. Sign-in
+          is optional and off by default.
         </LI>
-        <LI>We do not sell or rent your data, show ads, or run third-party analytics.</LI>
+        <LI>We do not sell or rent your data, show ads, or run any analytics or tracking.</LI>
       </ul>
 
       <H2>What is stored on your device</H2>
+      <P>Stored locally via <code>chrome.storage.local</code>:</P>
       <ul>
-        <LI>The Spaces, Collections, and saved tabs you create — their titles, URLs, and optional descriptions.</LI>
+        <LI>
+          Your Spaces, Collections, and saved tabs — their names, titles, full URLs, descriptions,
+          favicon URLs, star flags, ordering, and collapse state.
+        </LI>
         <LI>Your interface preferences (theme, view mode, sort order, active space).</LI>
-        <LI>When signed in: your account email and sign-in tokens, sent only to our API.</LI>
+        <LI>
+          When signed in: your account email and sign-in tokens (access + refresh), used only to talk to
+          our API. These are held in the browser&rsquo;s extension storage (unencrypted); signing out
+          removes them.
+        </LI>
       </ul>
       <P>
-        You can remove local data at any time by deleting items in the extension, or by removing the
+        Reading your open tabs (their titles and URLs) happens only in memory while the extension is
+        open, so you can choose which to save — open tabs are never stored or transmitted unless you
+        explicitly save them. You can remove local data any time by deleting items, or by removing the
         extension from <code>chrome://extensions</code> (which clears its storage).
       </P>
 
@@ -76,45 +86,55 @@ export default function PrivacyPage() {
           over HTTPS and stored only as a salted argon2id hash — we never store or log your plaintext password.
         </LI>
         <LI>
-          <strong>Your content.</strong> The Spaces, Collections, and saved tabs you sync — their titles,
-          URLs, and descriptions — are transmitted to and stored on our server to sync to your other devices.
+          <strong>Your content.</strong> The full structure of what you sync: Space names and emoji
+          icons; Collection names, ordering, and collapse state; and your saved tabs&rsquo; titles, full
+          URLs, descriptions, favicon URLs, star flags, and ordering — along with parent relationships
+          and created/updated timestamps. Stored only to your own account, to sync to your other devices.
+        </LI>
+        <LI>
+          <strong>Device / session info.</strong> Your browser&rsquo;s User-Agent string is recorded with
+          each sign-in session, to help manage and revoke sessions.
         </LI>
         <LI>
           <strong>Transactional email.</strong> We email you to verify your address and reset your
-          password. We do not send marketing email.
+          password (via Resend). We do not send marketing email.
         </LI>
         <LI>
-          <strong>Security signals.</strong> We process your IP address transiently to rate-limit abuse of
-          the sign-in and password endpoints.
+          <strong>Abuse prevention.</strong> We use your IP address and email address as keys to
+          rate-limit the sign-in and password endpoints. When our rate-limiter (Upstash) is enabled,
+          these keys are held only for the limiter&rsquo;s short time window; they are not written to the
+          main database.
         </LI>
       </ul>
       <P>
-        You can stop syncing at any time by signing out. To delete your account and the data stored on our
-        server, contact us at the address below.
+        You can stop syncing any time by signing out. To delete your account and the data stored on our
+        server, contact us at the address below — there is currently no in-app &ldquo;delete account&rdquo; button.
       </P>
 
       <H2>Service providers (subprocessors)</H2>
       <P>When sync is used, your data is processed by these providers on our behalf — never sold:</P>
       <ul>
-        <LI><strong>MongoDB Atlas</strong> — hosts the synced database.</LI>
-        <LI><strong>Resend</strong> — sends verification and password-reset email.</LI>
-        <LI><strong>Upstash</strong> — rate-limiting to protect the auth endpoints.</LI>
-        <LI><strong>Vercel</strong> — hosts the sync API.</LI>
+        <LI><strong>MongoDB Atlas</strong> — hosts the synced database (account, sessions, content).</LI>
+        <LI><strong>Resend</strong> — sends verification and password-reset email (receives your email + the link).</LI>
+        <LI><strong>Upstash</strong> — rate-limiting (receives your IP and email as short-lived keys; no content, passwords, or tokens).</LI>
+        <LI><strong>Vercel</strong> — hosts the API; all traffic transits Vercel.</LI>
       </ul>
 
       <H2>Browser permissions and why they are used</H2>
       <ul>
         <LI><strong>tabs</strong> — to read the titles and URLs of your open tabs so you can save and restore them, only when you act.</LI>
         <LI><strong>storage</strong> — to save your spaces, collections, preferences, and (when signed in) your session on your device.</LI>
-        <LI><strong>alarms</strong> — a lightweight periodic timer to keep your sign-in session token fresh while signed in; it transmits nothing when signed out.</LI>
+        <LI><strong>alarms</strong> — declares a periodic background timer reserved for keeping your sign-in session active in a future update; it currently performs no action and transmits nothing.</LI>
+        <LI><strong>Access to <code>vc-chrome-tab-extension.vercel.app</code></strong> (host permission) — to communicate with our sync API for optional sign-in and to back up / restore your collections. Used only when you sign in; no other sites are accessed.</LI>
       </ul>
 
       <H2>Favicons (third-party request)</H2>
       <P>
         To show a website&rsquo;s icon, the extension loads favicons from Google&rsquo;s public favicon
         service (<code>https://www.google.com/s2/favicons</code>). That request includes only the domain
-        name (e.g. <code>example.com</code>) of the site whose icon is shown. Google&rsquo;s handling is
-        governed by Google&rsquo;s own privacy policy.
+        name (e.g. <code>example.com</code>) of the page whose icon is shown — no path, no other data.
+        This happens whether or not you are signed in. Google&rsquo;s handling is governed by
+        Google&rsquo;s own privacy policy.
       </P>
 
       <H2>Data sharing and sale</H2>
@@ -126,7 +146,13 @@ export default function PrivacyPage() {
       <H2>Data retention and deletion</H2>
       <ul>
         <LI>Local data is removed when you delete items or uninstall the extension.</LI>
-        <LI>Synced data persists on our server until you delete it or request account deletion. Email us to delete your account and server data.</LI>
+        <LI>
+          Synced data is kept on our server until you ask us to delete it. Items you remove while syncing
+          are recorded as tombstones, so deleted content may persist on the server until your account is
+          deleted. Sign-in sessions (hashed refresh tokens and their device info) auto-expire about 30
+          days after issue.
+        </LI>
+        <LI>There is no self-service account deletion yet — email us (below) to delete your account and its server-side data.</LI>
       </ul>
 
       <H2>Children&rsquo;s privacy</H2>

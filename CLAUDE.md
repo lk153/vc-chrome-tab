@@ -30,3 +30,5 @@ is first on `PATH`. Use Node v26 by prefixing commands:
   sync needs no migration.
 - Build = `pnpm build` (runs icon-gen, `tsc --noEmit`, then `vite build` → `dist/`).
   Load `apps/extension/dist` as an unpacked extension.
+
+  NOTE: Codex will strictly verify your work again after you finish any task
