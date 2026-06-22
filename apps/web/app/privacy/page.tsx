@@ -124,7 +124,6 @@ export default function PrivacyPage() {
       <ul>
         <LI><strong>tabs</strong> — to read the titles and URLs of your open tabs so you can save and restore them, only when you act.</LI>
         <LI><strong>storage</strong> — to save your spaces, collections, preferences, and (when signed in) your session on your device.</LI>
-        <LI><strong>alarms</strong> — declares a periodic background timer reserved for keeping your sign-in session active in a future update; it currently performs no action and transmits nothing.</LI>
         <LI><strong>Access to <code>vc-chrome-tab-extension.vercel.app</code></strong> (host permission) — to communicate with our sync API for optional sign-in and to back up / restore your collections. Used only when you sign in; no other sites are accessed.</LI>
       </ul>
 
