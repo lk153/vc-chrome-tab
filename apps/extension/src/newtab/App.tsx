@@ -14,6 +14,7 @@ import { useOpenTabsStore } from "@/store/useOpenTabsStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useOverlayStore } from "@/store/useOverlayStore";
 import { Button } from "@/components/ui/Button";
+import { PromptDialog } from "@/components/ui/PromptDialog";
 import { Toast } from "@/components/Toast";
 import { IconPlus } from "@/components/icons";
 import { Sidebar } from "./components/Sidebar";
@@ -44,6 +45,7 @@ export function App() {
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const [dragLabel, setDragLabel] = useState<string | null>(null);
+  const [newCollectionOpen, setNewCollectionOpen] = useState(false);
 
   if (!ready || !spaceId) return <LoadingScreen />;
 
@@ -55,10 +57,7 @@ export function App() {
   const savedTabCount = tabs.filter((t) => spaceCollectionIds.has(t.collectionId)).length;
   const editingTab = editingTabId ? tabs.find((t) => t.id === editingTabId) : undefined;
 
-  const onNewCollection = () => {
-    const name = window.prompt("Name your new collection");
-    if (name?.trim()) addCollection(spaceId, name.trim());
-  };
+  const onNewCollection = () => setNewCollectionOpen(true);
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface">
@@ -102,6 +101,16 @@ export function App() {
       </DndContext>
 
       {editingTab && <EditTabModal key={editingTab.id} tab={editingTab} />}
+      {newCollectionOpen && (
+        <PromptDialog
+          title="New collection"
+          label="Collection name"
+          placeholder="e.g. Reading list"
+          confirmLabel="Create"
+          onConfirm={(name) => addCollection(spaceId, name)}
+          onClose={() => setNewCollectionOpen(false)}
+        />
+      )}
       <CommandPalette />
       <SavePicker />
       <Toast />

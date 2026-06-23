@@ -1,9 +1,14 @@
+import { useState } from "react";
 import type { Space } from "@vctabs/shared";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useUiStore } from "@/store/useUiStore";
 import { useOverlayStore } from "@/store/useOverlayStore";
-import { IconChevronsUpDown, IconMoon, IconPlus, IconSearch, IconSun, IconTrash } from "@/components/icons";
+import { useAuthStore } from "@/store/useAuthStore";
+import { PRIVACY_URL } from "@/lib/api/config";
+import { IconMoon, IconPlus, IconSearch, IconSun, IconTrash } from "@/components/icons";
 import { IconButton } from "@/components/ui/IconButton";
+import { PromptDialog } from "@/components/ui/PromptDialog";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { SpaceIcon } from "@/components/SpaceIcon";
 import { AccountSection } from "./AccountSection";
 
@@ -15,15 +20,11 @@ export function Sidebar() {
   const deleteSpace = useWorkspaceStore((s) => s.deleteSpace);
   const activeSpaceId = useUiStore((s) => s.activeSpaceId);
   const setActiveSpace = useUiStore((s) => s.setActiveSpace);
+  const [addingSpace, setAddingSpace] = useState(false);
+  const [spaceToDelete, setSpaceToDelete] = useState<Space | null>(null);
 
-  const onAddSpace = () => {
-    const name = window.prompt("Name your new space");
-    if (name?.trim()) addSpace(name.trim());
-  };
-
-  const onDeleteSpace = (space: Space) => {
+  const performDeleteSpace = (space: Space) => {
     if (spaces.length <= 1) return;
-    if (!window.confirm(`Delete space “${space.name}” and everything inside it?`)) return;
     if (space.id === activeSpaceId) {
       const fallback = spaces.find((s) => s.id !== space.id);
       if (fallback) setActiveSpace(fallback.id);
@@ -33,27 +34,13 @@ export function Sidebar() {
 
   return (
     <aside className="flex w-[266px] shrink-0 flex-col border-r border-outline-variant bg-surface-container-low px-3.5 pb-3 pt-3.5">
-      <button
-        type="button"
-        className="flex items-center gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-surface-container-highest"
-      >
-        <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[10px] bg-primary text-[15px] font-extrabold text-on-primary">
-          V
-        </span>
-        <span className="min-w-0 flex-1 truncate title-small font-bold text-on-surface">Vito's organization</span>
-        <IconChevronsUpDown size={15} className="shrink-0 text-on-surface-variant" />
-      </button>
+      <WorkspaceHeader />
 
       <SidebarSearch />
 
-      <nav className="mt-4 space-y-0.5">
-        <NavStub label="To / Links" />
-        <NavStub label="Next" />
-      </nav>
-
       <div className="mb-1 mt-4 flex items-center justify-between px-2.5">
         <span className="label-small font-bold uppercase tracking-wider text-on-surface-variant">Spaces</span>
-        <IconButton label="Add space" onClick={onAddSpace} className="h-6 w-6">
+        <IconButton label="Add space" onClick={() => setAddingSpace(true)} className="h-6 w-6">
           <IconPlus size={15} />
         </IconButton>
       </div>
@@ -67,13 +54,40 @@ export function Sidebar() {
             canDelete={spaces.length > 1}
             collectionCount={collections.filter((c) => c.spaceId === space.id).length}
             onClick={() => setActiveSpace(space.id)}
-            onDelete={() => onDeleteSpace(space)}
+            onDelete={() => setSpaceToDelete(space)}
           />
         ))}
       </ul>
 
       <AccountSection />
       <SidebarFooter />
+
+      {addingSpace && (
+        <PromptDialog
+          title="New space"
+          label="Space name"
+          placeholder="e.g. Personal"
+          confirmLabel="Create"
+          onConfirm={(name) => addSpace(name)}
+          onClose={() => setAddingSpace(false)}
+        />
+      )}
+
+      {spaceToDelete && (
+        <ConfirmDialog
+          title="Delete space"
+          message={
+            <>
+              Permanently delete <strong className="text-on-surface">{spaceToDelete.name}</strong> and
+              everything inside it? This can&rsquo;t be undone.
+            </>
+          }
+          confirmLabel="Delete"
+          destructive
+          onConfirm={() => performDeleteSpace(spaceToDelete)}
+          onClose={() => setSpaceToDelete(null)}
+        />
+      )}
     </aside>
   );
 }
@@ -143,11 +157,17 @@ function SpaceRow({
   );
 }
 
-function NavStub({ label }: { label: string }) {
+/** Workspace identity chip — shows the signed-in user, or a neutral default. */
+function WorkspaceHeader() {
+  const user = useAuthStore((s) => s.user);
+  const label = user?.email ?? "My Workspace";
+  const initial = (user?.email?.[0] ?? "W").toUpperCase();
   return (
-    <div className="flex cursor-default items-center justify-between rounded-[9px] px-2.5 py-1.5" title="Coming soon">
-      <span className="body-medium font-medium text-on-surface-variant">{label}</span>
-      <span className="rounded-full bg-primary-container px-2 py-0.5 label-small font-semibold text-primary">Soon</span>
+    <div className="flex items-center gap-3 rounded-xl px-2 py-2">
+      <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[10px] bg-primary text-[15px] font-extrabold text-on-primary">
+        {initial}
+      </span>
+      <span className="min-w-0 flex-1 truncate title-small font-bold text-on-surface">{label}</span>
     </div>
   );
 }
@@ -158,7 +178,15 @@ function SidebarFooter() {
   return (
     <div className="mt-2 flex items-center justify-between border-t border-outline-variant pt-3">
       <span className="body-small font-medium text-on-surface-variant">
-        VC Tabs · <span className="font-mono">0.3</span>
+        VC Tabs · <span className="font-mono">0.3</span> ·{" "}
+        <a
+          href={PRIVACY_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="hover:text-primary hover:underline"
+        >
+          Privacy
+        </a>
       </span>
       <button
         type="button"

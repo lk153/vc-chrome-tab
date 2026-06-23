@@ -99,6 +99,10 @@ We do **not** sell, rent, or share your data with anyone for their own purposes.
 There is no advertising or third-party analytics. Data is shared only with the
 providers above, solely to operate sync.
 
+VC Tabs' use of information received from Google APIs, and all user data it
+handles, adheres to the [Chrome Web Store User Data Policy](https://developer.chrome.com/docs/webstore/program-policies/limited-use),
+including the Limited Use requirements.
+
 ## Data retention and deletion
 
 - **Local data** is removed when you delete items or uninstall the extension.

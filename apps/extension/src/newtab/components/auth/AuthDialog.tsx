@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
+import { PRIVACY_URL } from "@/lib/api/config";
 import { useAuthStore } from "@/store/useAuthStore";
 
 /** Login / register dialog. Sign-in is optional — it just enables cloud sync. */
@@ -108,6 +109,14 @@ export function AuthDialog({ onClose }: { onClose: () => void }) {
             </button>
           </>
         )}
+      </p>
+
+      <p className="mt-2 body-small text-on-surface-variant">
+        By continuing you agree to our{" "}
+        <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="text-primary hover:underline">
+          Privacy Policy
+        </a>
+        .
       </p>
     </Modal>
   );

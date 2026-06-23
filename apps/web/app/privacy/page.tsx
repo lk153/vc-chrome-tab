@@ -141,6 +141,17 @@ export default function PrivacyPage() {
         We do not sell, rent, or share your data with anyone for their own purposes. There is no
         advertising or third-party analytics. Data is shared only with the providers above, solely to operate sync.
       </P>
+      <P>
+        VC Tabs&rsquo; use of information received from Google APIs, and all user data it handles,
+        adheres to the{" "}
+        <a
+          href="https://developer.chrome.com/docs/webstore/program-policies/limited-use"
+          style={{ color: BRAND }}
+        >
+          Chrome Web Store User Data Policy
+        </a>
+        , including the Limited Use requirements.
+      </P>
 
       <H2>Data retention and deletion</H2>
       <ul>

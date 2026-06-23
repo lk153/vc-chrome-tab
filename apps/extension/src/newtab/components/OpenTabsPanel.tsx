@@ -17,6 +17,7 @@ import {
 } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { IconButton } from "@/components/ui/IconButton";
+import { PromptDialog } from "@/components/ui/PromptDialog";
 import { Dropdown, type DropdownItem } from "@/components/ui/Dropdown";
 import { filterTabs, groupTabsBySite } from "@/lib/data/group";
 import { activateTab, closeTab } from "@/lib/chrome/tabs";
@@ -36,6 +37,7 @@ export function OpenTabsPanel({ spaceId }: { spaceId: string }) {
   const setMode = useUiStore((s) => s.setOpenTabsGroupMode);
   const [filter, setFilter] = useState("");
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const [savingSession, setSavingSession] = useState(false);
 
   const filtered = useMemo(() => filterTabs(tabs, filter), [tabs, filter]);
   const groups = useMemo(() => groupTabsBySite(filtered), [filtered]);
@@ -49,9 +51,7 @@ export function OpenTabsPanel({ spaceId }: { spaceId: string }) {
     });
 
   const onSaveSession = () => {
-    if (!tabs.length) return;
-    const name = window.prompt("Name this session", "Session") ?? "Session";
-    saveSession(spaceId, name, tabs);
+    if (tabs.length) setSavingSession(true);
   };
 
   return (
@@ -137,6 +137,17 @@ export function OpenTabsPanel({ spaceId }: { spaceId: string }) {
           filtered.map((tab) => <OpenTabRow key={tab.id} tab={tab} />)
         )}
       </ul>
+
+      {savingSession && (
+        <PromptDialog
+          title="Save session as collection"
+          label="Collection name"
+          initialValue="Session"
+          confirmLabel="Save"
+          onConfirm={(name) => saveSession(spaceId, name, tabs)}
+          onClose={() => setSavingSession(false)}
+        />
+      )}
     </aside>
   );
 }

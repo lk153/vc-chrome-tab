@@ -9,6 +9,10 @@ Homebrew `node@22` is broken on this machine (missing `libsimdjson.29.dylib`) an
 is first on `PATH`. Use Node v26 by prefixing commands:
 `export PATH="/opt/homebrew/bin:$PATH"`. Then `pnpm install` / `pnpm build`.
 
+Simpler: use the root `Makefile` (`make help`) — it bakes in the PATH fix.
+Common targets: `make dev` (API server), `make build`, `make package` (store zip),
+`make typecheck`, `make release`.
+
 ## Where things are
 
 - `apps/extension/` — the product. Vite multi-entry build (no CRXJS), static MV3
@@ -29,7 +33,7 @@ is first on `PATH`. Use Node v26 by prefixing commands:
   Keep mutations pure (return new `WorkspaceData`) and functions small.
 - Every domain object carries `id`/`createdAt`/`updatedAt`/`order` so Phase 2
   sync needs no migration.
-- Build = `pnpm build` (runs icon-gen, `tsc --noEmit`, then `vite build` → `dist/`).
+- Build = `pnpm build` (`tsc --noEmit`, then `vite build` → `dist/`).
   Load `apps/extension/dist` as an unpacked extension.
 
   NOTE: Codex will strictly verify your work again after you finish any task

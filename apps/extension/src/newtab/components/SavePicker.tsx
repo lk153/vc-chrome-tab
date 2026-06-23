@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IconPlus } from "@/components/icons";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useUiStore } from "@/store/useUiStore";
@@ -16,6 +16,8 @@ export function SavePicker() {
   const addTab = useWorkspaceStore((s) => s.addTab);
   const addCollection = useWorkspaceStore((s) => s.addCollection);
   const activeSpaceId = useUiStore((s) => s.activeSpaceId);
+  const [naming, setNaming] = useState(false);
+  const [newName, setNewName] = useState("");
 
   useEffect(() => {
     if (!tab) return;
@@ -36,10 +38,10 @@ export function SavePicker() {
     toast(`Saved to “${name}”`);
   };
 
-  const onNew = () => {
-    const name = window.prompt("Name your new collection");
-    if (!name?.trim() || !spaceId) return;
-    addCollection(spaceId, name.trim());
+  const onCreate = () => {
+    const name = newName.trim();
+    if (!name || !spaceId) return;
+    addCollection(spaceId, name);
     const created = useWorkspaceStore
       .getState()
       .data.collections.filter((c) => c.spaceId === spaceId)
@@ -80,16 +82,44 @@ export function SavePicker() {
             );
           })}
 
-          <button
-            type="button"
-            onClick={onNew}
-            className="mt-1 flex w-full items-center gap-3 rounded-xl border-t border-outline-variant px-3 py-2.5 text-left transition-colors hover:bg-surface-container-highest"
-          >
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-on-primary">
-              <IconPlus size={16} />
-            </span>
-            <span className="flex-1 body-medium font-semibold text-on-surface">New collection…</span>
-          </button>
+          {naming ? (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                onCreate();
+              }}
+              className="mt-1 flex items-center gap-3 border-t border-outline-variant px-3 py-2.5"
+            >
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-on-primary">
+                <IconPlus size={16} />
+              </span>
+              <input
+                autoFocus
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="New collection name"
+                className="min-w-0 flex-1 bg-transparent body-medium font-semibold text-on-surface outline-none placeholder:font-normal placeholder:text-on-surface-variant"
+              />
+              <button
+                type="submit"
+                disabled={!newName.trim()}
+                className="shrink-0 rounded-lg px-2.5 py-1 label-large font-semibold text-primary hover:bg-primary-container disabled:opacity-40"
+              >
+                Create
+              </button>
+            </form>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setNaming(true)}
+              className="mt-1 flex w-full items-center gap-3 rounded-xl border-t border-outline-variant px-3 py-2.5 text-left transition-colors hover:bg-surface-container-highest"
+            >
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-on-primary">
+                <IconPlus size={16} />
+              </span>
+              <span className="flex-1 body-medium font-semibold text-on-surface">New collection…</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

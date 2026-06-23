@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import type { SavedTab } from "@vctabs/shared";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { IconButton } from "@/components/ui/IconButton";
 import { Favicon } from "@/components/Favicon";
 import { IconInfo, IconTrash, IconX } from "@/components/icons";
@@ -19,6 +20,7 @@ export function EditTabModal({ tab }: { tab: SavedTab }) {
   const [title, setTitle] = useState(tab.title);
   const [description, setDescription] = useState(tab.description ?? "");
   const [urlSuffix, setUrlSuffix] = useState(initial.suffix);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const onDone = () => {
     updateTab(tab.id, {
@@ -29,12 +31,7 @@ export function EditTabModal({ tab }: { tab: SavedTab }) {
     close();
   };
 
-  const onDelete = () => {
-    if (window.confirm(`Delete “${tab.title}”?`)) {
-      deleteTab(tab.id);
-      close();
-    }
-  };
+  const onDelete = () => setConfirmingDelete(true);
 
   return (
     <Modal onClose={close}>
@@ -94,6 +91,25 @@ export function EditTabModal({ tab }: { tab: SavedTab }) {
           </Button>
         </div>
       </footer>
+
+      {confirmingDelete && (
+        <ConfirmDialog
+          title="Delete tab"
+          message={
+            <>
+              Permanently delete <strong className="text-on-surface">{tab.title}</strong>? This
+              can&rsquo;t be undone.
+            </>
+          }
+          confirmLabel="Delete"
+          destructive
+          onConfirm={() => {
+            deleteTab(tab.id);
+            close();
+          }}
+          onClose={() => setConfirmingDelete(false)}
+        />
+      )}
     </Modal>
   );
 }
