@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face { font-family: 'Hanken Grotesk'; font-weight: 500;
+        src: url('/Users/vito/web/vc-chrome-tab/apps/extension/node_modules/@fontsource/hanken-grotesk/files/hanken-grotesk-latin-500-normal.woff2') format('woff2'); }
+      @font-face { font-family: 'Hanken Grotesk'; font-weight: 700;
+        src: url('/Users/vito/web/vc-chrome-tab/apps/extension/node_modules/@fontsource/hanken-grotesk/files/hanken-grotesk-latin-700-normal.woff2') format('woff2'); }
+      @font-face { font-family: 'Hanken Grotesk'; font-weight: 800;
+        src: url('/Users/vito/web/vc-chrome-tab/apps/extension/node_modules/@fontsource/hanken-grotesk/files/hanken-grotesk-latin-800-normal.woff2') format('woff2'); }
+      :root { --brand: #147a4a; --brand-deep: #0c5232; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { width: 1400px; height: 560px; overflow: hidden; }
+      body {
+        font-family: 'Hanken Grotesk', system-ui, sans-serif;
+        color: #fff; position: relative;
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+        display: flex; align-items: center; padding: 0 90px;
+      }
+      .stack { position: relative; z-index: 2; }
+      img.logo { width: 132px; height: 132px; display: block;
+        border-radius: 22%; box-shadow: 0 12px 34px rgba(0,0,0,.28); }
+      .wordmark { font-weight: 800; font-size: 104px; letter-spacing: -0.02em;
+        line-height: 1; margin: 28px 0 18px; }
+      .tagline { font-weight: 700; font-size: 34px; opacity: .95; }
+      .subline { font-weight: 500; font-size: 22px; opacity: .82;
+        margin-top: 14px; max-width: 720px; line-height: 1.45; }
+      .cards { position: absolute; right: -40px; top: 50%;
+        transform: translateY(-50%) rotate(-8deg); opacity: .85; }
+      .cards .card { width: 360px; height: 86px; margin: 16px 0; border-radius: 16px;
+        background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); }
+    </style>
+  </head>
+  <body>
+    <div class="stack">
+      <img class="logo" src="/Users/vito/web/vc-chrome-tab/apps/extension/public/icons/icon128.png" alt="VC Tabs" />
+      <div class="wordmark">VC Tabs</div>
+      <div class="tagline">Organize your tabs. Reclaim your focus.</div>
+      <div class="subline">Save, organize, and restore your open tabs into Spaces and Collections — with optional sync across devices.</div>
+    </div>
+    <div class="cards"><div class="card"></div><div class="card"></div><div class="card"></div></div>
+  </body>
+</html>

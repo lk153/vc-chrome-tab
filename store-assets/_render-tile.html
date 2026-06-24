@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face { font-family: 'Hanken Grotesk'; font-weight: 500;
+        src: url('/Users/vito/web/vc-chrome-tab/apps/extension/node_modules/@fontsource/hanken-grotesk/files/hanken-grotesk-latin-500-normal.woff2') format('woff2'); }
+      @font-face { font-family: 'Hanken Grotesk'; font-weight: 700;
+        src: url('/Users/vito/web/vc-chrome-tab/apps/extension/node_modules/@fontsource/hanken-grotesk/files/hanken-grotesk-latin-700-normal.woff2') format('woff2'); }
+      @font-face { font-family: 'Hanken Grotesk'; font-weight: 800;
+        src: url('/Users/vito/web/vc-chrome-tab/apps/extension/node_modules/@fontsource/hanken-grotesk/files/hanken-grotesk-latin-800-normal.woff2') format('woff2'); }
+      :root { --brand: #147a4a; --brand-deep: #0c5232; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { width: 440px; height: 280px; overflow: hidden; }
+      body {
+        font-family: 'Hanken Grotesk', system-ui, sans-serif;
+        color: #fff; position: relative;
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center; text-align: center;
+        padding: 24px;
+      }
+      /* decorative collection cards, faint, top-right */
+      .cards { position: absolute; right: -70px; top: 50%;
+        transform: translateY(-50%) rotate(-8deg); opacity: .5; }
+      .cards .card { width: 240px; height: 56px; margin: 13px 0; border-radius: 13px;
+        background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.20); }
+      .stack { position: relative; z-index: 2; }
+      img.logo { width: 78px; height: 78px; display: block; margin: 0 auto;
+        border-radius: 22%; box-shadow: 0 10px 26px rgba(0,0,0,.28); }
+      .wordmark { font-weight: 800; font-size: 46px; letter-spacing: -0.02em;
+        line-height: 1; margin: 18px 0 8px; }
+      .tagline { font-weight: 700; font-size: 18px; opacity: .95; }
+    </style>
+  </head>
+  <body>
+    <div class="cards"><div class="card"></div><div class="card"></div><div class="card"></div></div>
+    <div class="stack">
+      <img class="logo" src="/Users/vito/web/vc-chrome-tab/apps/extension/public/icons/icon128.png" alt="VC Tabs" />
+      <div class="wordmark">VC Tabs</div>
+      <div class="tagline">Tab manager &amp; organizer</div>
+    </div>
+  </body>
+</html>

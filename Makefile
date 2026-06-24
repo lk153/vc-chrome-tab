@@ -11,11 +11,13 @@ WEB     := @vctabs/web
 SHOTS   := store-assets/vc-tab-1.png store-assets/vc-tab-2.png store-assets/vc-tab-3.png store-assets/vc-tab-4.png
 # Invoke Node by absolute path — the node@22 on PATH is broken; this symlink is v26.
 NODE    := /opt/homebrew/bin/node
+CHROME  := /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+SA      := store-assets
 
 .DEFAULT_GOAL := help
 .PHONY: help install dev ext-dev build build-ext build-web typecheck \
         package release e2e e2e-step2 db-test health health-local \
-        screenshots clean
+        screenshots promo clean
 
 help: ## List available commands
 	@echo "VC Tabs — make targets:"
@@ -67,6 +69,18 @@ health-local: ## Curl local /api/health
 # ── Store assets ─────────────────────────────────────────────────────────────
 screenshots: ## Normalize raw 2560x1600 captures to 1280x800
 	$(NODE) store-assets/process-screenshots.mjs store-assets $(SHOTS)
+
+promo: ## Render promo tile (440x280) + marquee (1400x560) PNGs via headless Chrome
+	"$(CHROME)" --headless=new --disable-gpu --force-device-scale-factor=1 \
+		--allow-file-access-from-files --hide-scrollbars --virtual-time-budget=4000 \
+		--window-size=440,280 --screenshot="$(PWD)/$(SA)/vc-tab-promo-440x280.png" \
+		"file://$(PWD)/$(SA)/_render-tile.html"
+	"$(CHROME)" --headless=new --disable-gpu --force-device-scale-factor=1 \
+		--allow-file-access-from-files --hide-scrollbars --virtual-time-budget=4000 \
+		--window-size=1400,560 --screenshot="$(PWD)/$(SA)/vc-tab-marquee-1400x560.png" \
+		"file://$(PWD)/$(SA)/_render-marquee.html"
+	@echo "→ $(SA)/vc-tab-promo-440x280.png (upload as Small promo tile)"
+	@echo "→ $(SA)/vc-tab-marquee-1400x560.png (upload as Marquee, optional)"
 
 # ── Cleanup ──────────────────────────────────────────────────────────────────
 clean: ## Remove build outputs + the store zip

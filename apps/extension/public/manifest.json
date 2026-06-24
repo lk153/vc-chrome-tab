@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "VC Tabs — Tab Manager",
   "version": "0.3.1",
-  "description": "Save, organize, and restore your browser tabs into Spaces and Collections.",
+  "description": "Save, organize, and restore your open tabs into Spaces and Collections — clear the clutter, with optional cross-device sync.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
