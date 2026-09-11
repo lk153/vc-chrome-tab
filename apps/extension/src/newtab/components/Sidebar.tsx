@@ -5,12 +5,14 @@ import { useUiStore } from "@/store/useUiStore";
 import { useOverlayStore } from "@/store/useOverlayStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { PRIVACY_URL } from "@/lib/api/config";
-import { IconMoon, IconPlus, IconSearch, IconSun, IconTrash } from "@/components/icons";
+import { appVersion } from "@/lib/chrome/runtime";
+import { IconMoon, IconPencil, IconPlus, IconSearch, IconSun, IconTrash } from "@/components/icons";
 import { IconButton } from "@/components/ui/IconButton";
 import { PromptDialog } from "@/components/ui/PromptDialog";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { SpaceIcon } from "@/components/SpaceIcon";
 import { AccountSection } from "./AccountSection";
+import { RenameSpaceDialog } from "./RenameSpaceDialog";
 
 /** Left rail: organization, search (→ command palette), spaces, theme toggle. */
 export function Sidebar() {
@@ -21,6 +23,7 @@ export function Sidebar() {
   const activeSpaceId = useUiStore((s) => s.activeSpaceId);
   const setActiveSpace = useUiStore((s) => s.setActiveSpace);
   const [addingSpace, setAddingSpace] = useState(false);
+  const [spaceToRename, setSpaceToRename] = useState<Space | null>(null);
   const [spaceToDelete, setSpaceToDelete] = useState<Space | null>(null);
 
   const performDeleteSpace = (space: Space) => {
@@ -54,6 +57,7 @@ export function Sidebar() {
             canDelete={spaces.length > 1}
             collectionCount={collections.filter((c) => c.spaceId === space.id).length}
             onClick={() => setActiveSpace(space.id)}
+            onRename={() => setSpaceToRename(space)}
             onDelete={() => setSpaceToDelete(space)}
           />
         ))}
@@ -72,6 +76,8 @@ export function Sidebar() {
           onClose={() => setAddingSpace(false)}
         />
       )}
+
+      {spaceToRename && <RenameSpaceDialog space={spaceToRename} onClose={() => setSpaceToRename(null)} />}
 
       {spaceToDelete && (
         <ConfirmDialog
@@ -110,12 +116,14 @@ function SidebarSearch() {
   );
 }
 
+/** A space in the rail. Hover reveals ✎ (rename) and, when allowed, 🗑 (delete). */
 function SpaceRow({
   space,
   active,
   canDelete,
   collectionCount,
   onClick,
+  onRename,
   onDelete,
 }: {
   space: Space;
@@ -123,6 +131,7 @@ function SpaceRow({
   canDelete: boolean;
   collectionCount: number;
   onClick: () => void;
+  onRename: () => void;
   onDelete: () => void;
 }) {
   return (
@@ -130,7 +139,9 @@ function SpaceRow({
       <button
         type="button"
         onClick={onClick}
-        className={`flex w-full items-center gap-2.5 rounded-[10px] py-2 pl-2.5 pr-9 text-left title-small font-semibold transition-colors ${
+        className={`flex w-full items-center gap-2.5 rounded-[10px] py-2 pl-2.5 text-left title-small font-semibold transition-colors ${
+          canDelete ? "pr-16" : "pr-9"
+        } ${
           active ? "bg-primary-container text-primary" : "text-on-surface-variant hover:bg-surface-container-highest"
         }`}
       >
@@ -146,13 +157,16 @@ function SpaceRow({
           {collectionCount}
         </span>
       </button>
-      {canDelete && (
-        <span className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+      <span className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        <IconButton label="Rename space" onClick={onRename} className="h-7 w-7 hover:text-primary">
+          <IconPencil size={15} />
+        </IconButton>
+        {canDelete && (
           <IconButton label="Delete space" onClick={onDelete} className="h-7 w-7 hover:text-error">
             <IconTrash size={15} />
           </IconButton>
-        </span>
-      )}
+        )}
+      </span>
     </li>
   );
 }
@@ -178,7 +192,7 @@ function SidebarFooter() {
   return (
     <div className="mt-2 flex items-center justify-between border-t border-outline-variant pt-3">
       <span className="body-small font-medium text-on-surface-variant">
-        VC Tabs · <span className="font-mono">0.3</span> ·{" "}
+        VC Tabs · <span className="font-mono">{appVersion()}</span> ·{" "}
         <a
           href={PRIVACY_URL}
           target="_blank"

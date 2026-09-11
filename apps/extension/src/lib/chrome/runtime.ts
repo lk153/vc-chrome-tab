@@ -10,3 +10,10 @@ export function hasChromeStorage(): boolean {
 export function hasTabsApi(): boolean {
   return typeof chrome !== "undefined" && !!chrome.tabs;
 }
+
+/** The installed extension's manifest version; `dev` under plain `vite dev`. */
+export function appVersion(): string {
+  return typeof chrome !== "undefined" && chrome.runtime?.getManifest
+    ? chrome.runtime.getManifest().version
+    : "dev";
+}

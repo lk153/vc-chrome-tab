@@ -19,6 +19,7 @@ import { Toast } from "@/components/Toast";
 import { IconPlus } from "@/components/icons";
 import { Sidebar } from "./components/Sidebar";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
+import { SpaceHeader } from "./components/SpaceHeader";
 import { CollectionList } from "./components/CollectionList";
 import { OpenTabsPanel } from "./components/OpenTabsPanel";
 import { EditTabModal } from "./components/EditTabModal";
@@ -47,11 +48,11 @@ export function App() {
   const [dragLabel, setDragLabel] = useState<string | null>(null);
   const [newCollectionOpen, setNewCollectionOpen] = useState(false);
 
-  if (!ready || !spaceId) return <LoadingScreen />;
+  const space = ready ? spaces.find((s) => s.id === spaceId) : undefined;
+  if (!space) return <LoadingScreen />;
 
-  const space = spaces.find((s) => s.id === spaceId);
   const spaceCollectionIds = new Set(
-    collections.filter((c) => c.spaceId === spaceId).map((c) => c.id),
+    collections.filter((c) => c.spaceId === space.id).map((c) => c.id),
   );
   const collectionCount = spaceCollectionIds.size;
   const savedTabCount = tabs.filter((t) => spaceCollectionIds.has(t.collectionId)).length;
@@ -75,27 +76,20 @@ export function App() {
           <VerifyBanner />
           <div className="px-6 py-4">
             <div className="mb-3 flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <h1 className="text-[28px] font-bold leading-tight text-on-surface">
-                  {space?.name ?? "Workspace"}
-                </h1>
-                <p className="body-medium text-on-surface-variant">
-                  {collectionCount} collections · {savedTabCount} saved tabs
-                </p>
-              </div>
+              <SpaceHeader space={space} collectionCount={collectionCount} savedTabCount={savedTabCount} />
               <Button variant="filled" onClick={onNewCollection} className="shrink-0">
                 <IconPlus size={18} />
                 New Collection
               </Button>
             </div>
-            <WorkspaceToolbar spaceId={spaceId} />
+            <WorkspaceToolbar spaceId={space.id} />
           </div>
           <div className="scroll-thin flex-1 overflow-y-auto px-6 py-5">
-            <CollectionList spaceId={spaceId} />
+            <CollectionList spaceId={space.id} />
           </div>
         </main>
 
-        <OpenTabsPanel spaceId={spaceId} />
+        <OpenTabsPanel spaceId={space.id} />
 
         <DragOverlay>{dragLabel ? <DragChip label={dragLabel} /> : null}</DragOverlay>
       </DndContext>
@@ -107,7 +101,7 @@ export function App() {
           label="Collection name"
           placeholder="e.g. Reading list"
           confirmLabel="Create"
-          onConfirm={(name) => addCollection(spaceId, name)}
+          onConfirm={(name) => addCollection(space.id, name)}
           onClose={() => setNewCollectionOpen(false)}
         />
       )}

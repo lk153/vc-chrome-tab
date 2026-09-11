@@ -29,6 +29,10 @@ export function addSpace(data: WorkspaceData, name: string): WorkspaceData {
   return { ...data, spaces: [...data.spaces, space] };
 }
 
+export function renameSpace(data: WorkspaceData, id: string, name: string): WorkspaceData {
+  return mapSpace(data, id, (s) => ({ ...s, name: name.trim() || s.name }));
+}
+
 /** Remove a space and cascade-delete its collections and their tabs. */
 export function deleteSpace(data: WorkspaceData, id: string): WorkspaceData {
   const removedCollectionIds = new Set(
@@ -168,6 +172,13 @@ function tabsIn(data: WorkspaceData, collectionId: string): SavedTab[] {
 
 function reindex(tabs: SavedTab[]): SavedTab[] {
   return tabs.map((t, i) => (t.order === i ? t : { ...t, order: i }));
+}
+
+function mapSpace(data: WorkspaceData, id: string, fn: (s: Space) => Space): WorkspaceData {
+  return {
+    ...data,
+    spaces: data.spaces.map((s) => (s.id === id ? { ...fn(s), updatedAt: Date.now() } : s)),
+  };
 }
 
 function mapCollection(

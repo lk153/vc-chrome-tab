@@ -13,6 +13,7 @@ interface WorkspaceState {
    *  sync subscription, which ignores remote-applied changes). */
   setDataFromRemote: (data: WorkspaceData) => void;
   addSpace: (name: string) => void;
+  renameSpace: (id: string, name: string) => void;
   deleteSpace: (id: string) => void;
   addCollection: (spaceId: string, name: string) => void;
   renameCollection: (id: string, name: string) => void;
@@ -52,6 +53,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => {
 
     setDataFromRemote: (data) => commit(data),
     addSpace: (name) => commit(mutations.addSpace(get().data, name)),
+    renameSpace: (id, name) => commit(mutations.renameSpace(get().data, id, name)),
     deleteSpace: (id) => commit(mutations.deleteSpace(get().data, id)),
     addCollection: (spaceId, name) => commit(mutations.addCollection(get().data, spaceId, name)),
     renameCollection: (id, name) => commit(mutations.renameCollection(get().data, id, name)),

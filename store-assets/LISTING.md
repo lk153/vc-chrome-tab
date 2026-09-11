@@ -38,7 +38,7 @@ WHAT YOU CAN DO
 • Reopen instantly: open a single tab, or "Open all" to restore an entire Collection.
 • Drag and drop tabs between Collections, reorder them, and switch between Card and List views.
 • Find anything fast with the ⌘K / Ctrl+K command palette — search every Space, Collection, and saved tab at once.
-• Rename saved tabs and add your own notes so you remember why you kept them.
+• Rename Spaces, Collections, and saved tabs — and add notes to tabs so you remember why you kept them.
 • Clean light and dark themes.
 
 WHY YOU'LL LOVE IT

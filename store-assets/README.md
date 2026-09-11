@@ -6,7 +6,7 @@ Drop raw screenshots here. Final assets must meet these specs before upload.
 
 | Asset | Requirement | Status |
 |---|---|---|
-| Package | `apps/extension/vc-tabs-extension.zip` (`pnpm --filter @vctabs/extension package`) | ✅ ready |
+| Package | `apps/extension/vc-tabs-extension.zip` (`make package`; full checklist in [`../RELEASING.md`](../RELEASING.md)) | ✅ ready |
 | Icon 128×128 | PNG, in the package at `icons/icon128.png` | ✅ ready |
 | Screenshots | **1280×800** or **640×400** PNG/JPEG, 1–5 images | ✅ `vc-tabs*-1280x800.png` (3, alpha-flattened) |
 | Privacy policy URL | public URL hosting [`../PRIVACY.md`](../PRIVACY.md) | ⏳ host it (Gist/Pages) |

@@ -60,6 +60,8 @@ Outside the extension there are no `chrome.*` APIs, so the app falls back to
 ## What works today (Phase 1)
 
 - Spaces sidebar, collections, and saved-tab cards (seeded sample data on first run).
+- **Rename** a Space (hover ✎ beside the page title or in the sidebar row, or
+  double-click the title) or a Collection (hover ✎ / double-click its header).
 - **View** modes (Card / Compact / List / Grid) and **Sort** modes
   (Drag & Drop / Alphabetical / Starred To Top / Date Created).
 - **Drag & drop**: reorder tabs, move them between collections, and drag a live

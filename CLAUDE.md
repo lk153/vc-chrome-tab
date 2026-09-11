@@ -7,11 +7,12 @@ Authoritative scope & decisions live in [`implementation-plan.md`](./implementat
 
 Homebrew `node@22` is broken on this machine (missing `libsimdjson.29.dylib`) and
 is first on `PATH`. Use Node v26 by prefixing commands:
-`export PATH="/opt/homebrew/bin:$PATH"`. Then `pnpm install` / `pnpm build`.
+`export PATH="/opt/homebrew/bin:$PATH"`. Then `pnpm install` / `pnpm build`
+(`pnpm` is installed globally via Homebrew at `/opt/homebrew/bin/pnpm`).
 
 Simpler: use the root `Makefile` (`make help`) — it bakes in the PATH fix.
 Common targets: `make dev` (API server), `make build`, `make package` (store zip),
-`make typecheck`, `make release`.
+`make typecheck`, `make release`. Store publishing checklist: [`RELEASING.md`](./RELEASING.md).
 
 ## Where things are
 
